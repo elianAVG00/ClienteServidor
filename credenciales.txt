@@ -1,0 +1,3 @@
+use3r|abc|Admin|3
+user|abc|Admin|0
+mac|abc|Admin|0

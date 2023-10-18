@@ -1,0 +1,170 @@
+﻿Primera parte del TP: 
+Hacer que funcione la conexion y desconexion cliente/servidor
+
+Necesito:
+    Cliente y Servidor en C++
+    server.log
+
+Cliente:
+    Para conectarse se manda el IP y el Puerto
+    Una vez que el se conecta con servidor mostrar en Menu:
+        Cerrar sesion
+    
+
+Servidor:
+    Procesa y devuelve un resultado
+    Registrar la actividad de sesion en un Server.log 
+
+Aclaraciones:
+    Cuando un cliente sale, el servidor queda esperando a otro cliente. (*)
+---------------------------------------------------------------------------------------------------------------
+
+Segunda Parte:
+Agrego logueo y primer paso para incluir los usuarios.
+
+Necesito:
+    credenciales.txt -> Guardar usuario|contraseña
+
+Cliente:
+    Envia Usuario/Contraseña
+    Una vez que el se conecta con servidor mostrar en Menu:
+        Ver registro de actividades, se muestra por pantalla el .log
+        Cerrar sesion, se deconecta del servidor
+
+Servidor:
+    Devolver info del .log
+    Espera la conexion al Cliente si la conexion y la data es correcta se Conecta
+    Si el Login falla tira “Datos de usuario incorrectos” y suma al Intentos Fallidos
+    Si se llega a 3 intentos fallidos -> “Se ha superado la cantidad máxima de intentos, la cuenta [usuario] ha sido bloqueada.”
+    Registrar la actividad de sesion en un Server.log 
+
+---------------------------------------------------------------------------------------------------------------
+
+Tercera Parte:
+Todo lo relacionado a Usuarios.
+
+Necesito:
+    credenciales.txt -> Agregar cambios para que soporte usuario|contraseña|rol|intentos (roles = Admin/Consulta)
+
+Cliente:
+    Envia Usuario/Contraseña
+    Una vez que el se conecta con servidor mostrar en Menu:
+        Usuarios -> Alta/Desbloqueo (rol Admin)
+        Ver registro de actividades (rol Admin)
+        Cerrar sesion
+    La opcion Usuarios muestra un submenu -> Alta y Desbloqueo
+    Alta -> se puede dar de alta nuevos usuarios de Consulta, enviando Usuario/Password
+    Desbloqueo -> muestra listado de Usuarios bloqueados, se envia el usuario a desbloquear(nombre)
+    Se muestra el mensaje recibido por el servidor
+
+Servidor:
+    Alta:
+        1- Validar que el usuario no exista anteriormente, si existe -> “Error al dar de alta el nuevo usuario: usuario existente”
+        2- Validar que no se envien datos vacios, si sucede -> “Error al dar de alta el nuevo usuario: datos incompletos”
+        3- Al dar de Alta un usuario poner -> Intentos = 0, Rol = Consulta
+        4- Si la Alta es valida -> “[usuario] dado de alta correctamente”
+    Desbloqueo:
+        1- Devolver listado de usuarios bloqueados (donde Intentos es 3 o mas)(preguntar si es asi?)
+        2- Si no hay usuarios bloqueados -> “No se encontraron usuarios bloqueados”
+        3- Desbloqueo exitoso -> intentos= 0 y “[usuario] desbloqueado correctamente”
+
+---------------------------------------------------------------------------------------------------------------
+
+Cuarta Parte:
+Todo lo relacionado a Traducciones.
+
+Necesito:
+    traducciones.txt -> palabras ej. dog:perro (siempre minusculas *)
+
+Cliente:
+    Una vez que el se conecta con servidor mostrar en Menu:
+        Traducir (rol Consulta) (osea que alguien de rol admin no puede traducir ?)
+        Nueva traduccion (rol Admin)
+        Usuarios -> Alta/Desbloqueo (rol Admin)
+        Ver registro de actividades (rol Admin)
+        Cerrar sesion
+    Traducir: permite enviar palabra en ingles, recibe del servidor la traduccion o mnsj Error
+    Nueva traduccion: permite enviar nueva Palabra ej: palabraEnInglés:traducciónEnEspañol
+
+Servidor:
+    Traduccion:
+        1- Busca palabra en txt, Si la traduccion existe -> “[palabra] en inglés es [traducción] en español”
+        2- Si la palabra pedida no se encuentra en el .txt “No fue posible encontrar la traducción para: [palabra]”
+        3- 
+    Insercion:
+        1- Se obtiene del cliente una traduccion en el formato: palabraEnInglés:traducciónEnEspañol
+        2- Hay que validar el formato, si no cumple -> “No fue posible insertar la traducción. El formato de inserción debe ser palabraEnInglés:traducciónEnEspañol”
+        3- Si se inserta sin errores -> “Nueva traducción insertada correctamente”
+        4- Si la traduccion ya existia -> “Ya existe una traducción para [palabra]: [traducción]” 
+
+Aclaraciones:
+    las palabras a traducir deben convertirse en Minusculas para trabajarlas 
+
+
+---------------------------------------------------------------------------------------------------------------
+Nota: En caso de querer volver al menú anterior en alguna de las opciones
+excepto las dos últimas, al escribir “/salir”, se mostrará el menú principal
+nuevamente.
+
+Estoy usando info de la web principalmente de https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-start-page-2
+---------------------------------------------------------------------------------------------------------------
+Parte 1:
+Voy a usar el #include <winsock2.h>
+
+para compilar el cliente.cpp =>  g++ cliente.cpp -o cliente.exe -lwsock32
+para correr el .exe => start cliente.exe
+
+
+solo me funciona con la ip privada mia, apesar de poner INADDR_ANY en el servidor
+desde el cliente solo funciona mandandole ip privada
+
+WSAStartup(MAKEWORD(2,2), &WSAData);
+        server = socket(AF_INET, SOCK_STREAM, 0);
+        // addr.sin_addr.s_addr = inet_addr("192.168.20.7");
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(8080);
+        if (inet_pton(AF_INET, "127.8.9.1", &addr.sin_addr) <= 0)
+        {
+            printf("\nInvalid address/ Address not supported \n");
+                                system("pause");
+
+        }
+
+        con eso andfubo peor solo anda con ips q empiezan comn 12227 raro
+        https://networkengineering.stackexchange.com/questions/44635/why-can-i-ping-ip-addresses-from-127-0-0-1-to-127-255-255-254
+        ME FALLABA POR EL ROUTER HDP DE TELECENTRO o no se
+        ahora no me anda devvuelta, solo me anda con los 127
+
+        SIGO ADELANTE DESPUES ME FIJO
+        --------------------------------------------
+
+LISTO PRIMERA PARTE
+
+
+yo tengo una linea 
+
+linea --> strings separados (usario, pass) --> arr[0] = user; arr[1] = pass
+lineas -->
+
+
+que salga cuando validarcred = true o cuando termine de recorrer
+
+
+
+PROBLEMA CON QUE LO QUE MODIFICO DE UN USUARIO LO TQNGO QUE GUARDAR EN LA MISMA LINEA DE DONDE ENCONTRE EL USUARIO (yano)
+
+PROBLEMA TENGO QUE ESCRIBIR EL NUEVO ALTA DE USUARIO EN LA ULTIMA LINEA.NO SOBRESCIBIR (yano)
+
+PROBLEMA FALLA AL SOBRESCRIBIR UNA LINEA ESPECIFICA QUE QUIERO CAMBIAR EL INTENTO DE UN BLOQUEADO (yano)
+
+
+FALTA LO DE LOS ROLES SI ES ADMIN O NO
+
+
+
+EL /SALIR ESTA ROMPIENDO EL SERVIDOR
+
+
+
+
+Poner el puerto para el servidor
